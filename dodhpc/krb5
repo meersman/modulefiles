@@ -1,0 +1,64 @@
+#%Module1.0
+##
+## DoDHPC Kerberos Authentication
+##
+proc ModulesHelp { } {
+    puts stderr "DoDHPC Kerberos authentication setup"
+    puts stderr ""
+    puts stderr "Provides:"
+    puts stderr "  - Kerberos configuration for DoD HPC systems"
+    puts stderr "  - OpenSSH with GSSAPI support"
+    puts stderr "  - Aliases for common Kerberos operations"
+    puts stderr ""
+    puts stderr "Usage:"
+    puts stderr "  kinit <username@realm>      - Get Kerberos ticket"
+    puts stderr "  klist                       - List current tickets"
+    puts stderr "  kdestroy                    - Destroy tickets"
+    puts stderr "  ssh <system>                - SSH with Kerberos auth"
+}
+
+module-whatis "DoDHPC Kerberos authentication with OpenSSH"
+
+# Kerberos configuration
+setenv KRB5_CONFIG "/usr/local/krb5/etc/krb5.conf"
+
+# Add Kerberos tools to PATH
+prepend-path PATH "/usr/local/krb5/bin"
+
+# Add OpenSSH with GSSAPI support
+# prepend-path PATH "/usr/local/ossh/bin"
+
+# Useful aliases for DoD HPC work
+set-alias kcheck "klist -f"
+set-alias krenew "kinit -R"
+set-alias kclear "kdestroy"
+
+# Module load message
+if { [module-info mode load] } {
+    puts stderr "Loaded DoDHPC Kerberos authentication"
+    puts stderr ""
+    puts stderr "Kerberos config: $env(KRB5_CONFIG)"
+    puts stderr "Using custom krb5 and openssh from /usr/local/"
+    puts stderr ""
+    
+    # Check if config file exists
+    if { ![file exists "/usr/local/krb5/etc/krb5.conf"] } {
+        puts stderr "WARNING: Kerberos config not found"
+    } else {
+        puts stderr "Quick start:"
+        puts stderr "  kinit your.username@REALM"
+        puts stderr "  klist  # verify ticket"
+        puts stderr "  ssh hostname  # uses GSSAPI"
+    }
+    
+    # Check for existing tickets
+    if { ![catch {exec /usr/local/krb5/bin/klist -s}] } {
+        puts stderr ""
+        puts stderr "Active Kerberos tickets:"
+        catch {exec /usr/local/krb5/bin/klist} result
+        puts stderr $result
+    }
+}
+
+# Conflicts
+conflict kerberos mit-krb5

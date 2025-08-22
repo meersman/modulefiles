@@ -1,0 +1,33 @@
+#%Module1.0
+##
+## Homebrew Python 3.13.5
+##
+proc ModulesHelp { } {
+    puts stderr "Homebrew Python 3.13.5"
+}
+
+module-whatis "Homebrew Python 3.13.5"
+
+# Homebrew paths (adjust for your system)
+set python_root /opt/homebrew
+
+# Modify PATH
+prepend-path PATH $python_root/bin
+
+# Set Python path info
+setenv PYTHON_ROOT $python_root
+setenv PYTHON_VERSION 3.13.5
+
+# Aliases
+set-alias python python3
+set-alias pip pip3
+
+# Debug message to verify paths
+if { [module-info mode load] } {
+    puts stderr "Homebrew Python loaded"
+    puts stderr "  Version: 3.13.5"
+    puts stderr "     PATH: $python_root/bin (prepended)"
+    puts stderr "  Use 'which python3' to verify"
+}
+
+conflict miniconda

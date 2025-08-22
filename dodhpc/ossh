@@ -1,0 +1,25 @@
+#%Module1.0
+##
+## OpenSSH with GSSAPI support
+##
+proc ModulesHelp { } {
+    puts stderr "OpenSSH compiled with GSSAPI/Kerberos support"
+    puts stderr ""
+    puts stderr "Provides SSH client/server with Kerberos authentication"
+    puts stderr "Use with 'module load kerberos/dodhpc' for full functionality"
+}
+
+module-whatis "OpenSSH with GSSAPI/Kerberos support"
+
+# Add custom OpenSSH to PATH
+prepend-path PATH "/usr/local/ossh/bin"
+
+# SSH-specific aliases
+set-alias ssh-krb "ssh -o GSSAPIAuthentication=yes -o GSSAPIDelegateCredentials=yes"
+
+if { [module-info mode load] } {
+    puts stderr "Loaded OpenSSH with GSSAPI support"
+    puts stderr "  ssh, scp, sftp with Kerberos authentication"
+}
+
+conflict openssh ssh

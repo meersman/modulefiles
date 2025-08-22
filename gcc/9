@@ -1,0 +1,41 @@
+#%Module1.0
+##
+## GCC 9 compiler suite
+##
+proc ModulesHelp { } {
+    puts stderr "GCC 9 compiler suite with MPI integration"
+    puts stderr ""
+    puts stderr "Sets compiler environment for:"
+    puts stderr "  - GCC 9 C/C++ compilers"
+    puts stderr "  - Gfortran 9"
+    puts stderr "  - OpenMPI compiler wrappers"
+}
+
+module-whatis "GCC 9 compiler suite with MPI support"
+
+# Set MPI compiler wrappers to use GCC 9
+setenv OMPI_CC gcc-9
+setenv OMPI_CXX g++-9
+setenv OMPI_FC gfortran-9
+
+# Also set standard compiler environment variables
+setenv CC gcc-9
+setenv CXX g++-9
+setenv FC gfortran-9
+setenv F77 gfortran-9
+
+# Add compiler-specific flags if needed
+# setenv CFLAGS "-O3 -march=native"
+# setenv CXXFLAGS "-O3 -march=native"
+
+# Module load message
+if { [module-info mode load] } {
+    puts stderr "Loaded GCC 9 compiler suite"
+    puts stderr "  CC=$env(CC)"
+    puts stderr "  CXX=$env(CXX)" 
+    puts stderr "  FC=$env(FC)"
+    puts stderr "  OpenMPI will use GCC 9"
+}
+
+# Conflicts
+conflict gcc intel-compiler clang

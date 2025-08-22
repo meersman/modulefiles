@@ -1,0 +1,88 @@
+#%Module1.0
+##
+## Tecplot 2025 R1 with pytecplot
+##
+proc ModulesHelp { } {
+    puts stderr "Tecplot 2025 R1 with pytecplot support"
+    puts stderr ""
+    puts stderr "Provides:"
+    puts stderr "  - Tecplot 360 executable"
+    puts stderr "  - pytecplot Python library"
+    puts stderr "  - tec-status alias for license checking"
+    puts stderr ""
+    puts stderr "Usage:"
+    puts stderr "  tecplot360          - Launch Tecplot GUI"
+    puts stderr "  tec-status          - Check license usage"
+    puts stderr "  python -c 'import tecplot'  - Use pytecplot"
+}
+
+module-whatis "Tecplot 2025 R1 with pytecplot and license utilities"
+
+# Tecplot installation path (adjust for your installation)
+set tecplot_root "/Applications/Tecplot 360 EX 2025 R1"
+set tecplot_bin "$tecplot_root/bin"
+
+# Check if Tecplot is installed
+if { ![file exists $tecplot_root] } {
+    puts stderr "ERROR: Tecplot not found at $tecplot_root"
+    puts stderr "Please adjust the tecplot_root path in this module file"
+    break
+}
+
+# Add Tecplot to PATH
+prepend-path PATH $tecplot_bin
+
+# Set Tecplot environment variables
+setenv TECPLOT_ROOT $tecplot_root
+setenv TEC360_HOME $tecplot_root
+
+# License server environment (adjust for your setup)
+# setenv TECPLOT_LICENSE_SERVER "port@server"  # Uncomment and set if needed
+
+# Python path for pytecplot - CORRECTED PATH
+set pytecplot_path "$tecplot_root/pytecplot"
+if { [file exists $pytecplot_path] } {
+    prepend-path PYTHONPATH $pytecplot_path
+} else {
+    puts stderr "Warning: pytecplot not found at $pytecplot_path"
+}
+
+# Aliases
+set-alias tecplot360 "$tecplot_bin/tecplot360"
+set-alias tec "$tecplot_bin/tecplot360"
+
+# License status checking
+# Assumes rlmutil is in the Tecplot bin directory or system PATH
+set rlmutil_path "$tecplot_bin/rlmutil"
+if { [file exists $rlmutil_path] } {
+    set-alias tec-status "$rlmutil_path rlmstat -a -c tecplot"
+    set-alias tec-users "$rlmutil_path rlmstat -a -c tecplot | grep Users"
+} else {
+    # Fallback to system rlmutil if available
+    set-alias tec-status "rlmutil rlmstat -a -c tecplot"
+    set-alias tec-users "rlmutil rlmstat -a -c tecplot | grep Users"
+}
+
+# Additional license utilities
+set-alias tec-hostid "rlmutil rlmhostid"
+
+# Module load message
+if { [module-info mode load] } {
+    puts stderr "Loaded Tecplot 2025 R1"
+    puts stderr "  - tecplot360 or tec: Launch Tecplot"
+    puts stderr "  - tec-status: Check license usage"
+    puts stderr "  - pytecplot available in Python"
+    
+    # Test if license server is reachable (optional)
+    if { [info exists env(TECPLOT_LICENSE_SERVER)] } {
+        puts stderr "  - License server: $env(TECPLOT_LICENSE_SERVER)"
+    }
+}
+
+# Conflicts with other versions
+conflict tecplot
+
+# Module dependencies
+if { [info exists env(PYTHON_ENV)] } {
+    puts stderr "Note: pytecplot will use currently loaded Python environment ($env(PYTHON_ENV))"
+}

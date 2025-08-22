@@ -1,0 +1,37 @@
+#%Module1.0
+##
+## Miniconda Python 3.13.5
+##
+proc ModulesHelp { } {
+    puts stderr "Miniconda Python 3.13"
+}
+
+module-whatis "Miniconda Python 3.13 environment"
+
+# Miniconda paths
+set conda_root $env(HOME)/miniconda3
+
+# Initialize conda
+prepend-path PATH $conda_root/bin
+prepend-path PATH $conda_root/condabin
+
+# Set environment variables
+setenv CONDA_ROOT $conda_root
+setenv PYTHON_VERSION 3.13.5
+
+# Aliases - just like the homebrew module
+set-alias python python3
+set-alias pip pip3
+
+# Conda initialization
+if { [module-info mode load] } {
+    puts stderr "Miniconda Python loaded"
+    puts stderr "  Initializing conda environment..."
+    system "source $conda_root/etc/profile.d/conda.sh"    
+    puts stderr "  Version: 3.13.5"
+    puts stderr "     PATH: $conda_root/bin (prepended)"
+    puts stderr "           $conda_root/condabin (prepended)"
+    puts stderr "  Use 'which python3' to verify"
+}
+
+conflict python
