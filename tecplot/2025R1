@@ -38,6 +38,7 @@ setenv TEC360_HOME $tecplot_root
 
 # License server environment (adjust for your setup)
 # setenv TECPLOT_LICENSE_SERVER "port@server"  # Uncomment and set if needed
+setenv RLM_LICENSE "27100@tecplot.license.engr.arizona.edu"
 
 # Python path for pytecplot - CORRECTED PATH
 set pytecplot_path "$tecplot_root/pytecplot"
@@ -55,12 +56,12 @@ set-alias tec "$tecplot_bin/tecplot360"
 # Assumes rlmutil is in the Tecplot bin directory or system PATH
 set rlmutil_path "$tecplot_bin/rlmutil"
 if { [file exists $rlmutil_path] } {
-    set-alias tec-status "$rlmutil_path rlmstat -a -c tecplot"
-    set-alias tec-users "$rlmutil_path rlmstat -a -c tecplot | grep Users"
+    set-alias tec-status "sh -c '\"$rlmutil_path\" rlmstat -a -c 27100@tecplot.license.engr.arizona.edu'"
+    set-alias tec-users "sh -c '\"$rlmutil_path\" rlmstat -a -c 27100@tecplot.license.engr.arizona.edu | grep Users'"
 } else {
     # Fallback to system rlmutil if available
-    set-alias tec-status "rlmutil rlmstat -a -c tecplot"
-    set-alias tec-users "rlmutil rlmstat -a -c tecplot | grep Users"
+    set-alias tec-status "rlmutil rlmstat -a -c 27100@tecplot.license.engr.arizona.edu"
+    set-alias tec-users "rlmutil rlmstat -a -c 27100@tecplot.license.engr.arizona.edu | grep Users"
 }
 
 # Additional license utilities
