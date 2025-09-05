@@ -11,16 +11,17 @@ proc ModulesHelp { } {
     puts stderr "  - tec-status alias for license checking"
     puts stderr ""
     puts stderr "Usage:"
-    puts stderr "  tecplot360          - Launch Tecplot GUI"
+    puts stderr "  tec360              - Launch Tecplot GUI"
     puts stderr "  tec-status          - Check license usage"
-    puts stderr "  python -c 'import tecplot'  - Use pytecplot"
+    puts stderr "  python -c 'import teplot'  - Use pytecplot"
 }
 
 module-whatis "Tecplot 2025 R1 with pytecplot and license utilities"
 
 # Tecplot installation path (adjust for your installation)
 set tecplot_root "/Applications/Tecplot 360 EX 2025 R1"
-set tecplot_bin "$tecplot_root/bin"
+set tecplot_bin "$tecplot_root/Tecplot 360 EX 2025 R1.app/Contents/MacOS"
+set tecplot_exe "/Applications/Tecplot 360 EX 2025 R1/Tecplot 360 EX 2025 R1.app/Contents/MacOS/Tecplot 360 EX 2025 R1"
 
 # Check if Tecplot is installed
 if { ![file exists $tecplot_root] } {
@@ -49,8 +50,9 @@ if { [file exists $pytecplot_path] } {
 }
 
 # Aliases
-set-alias tecplot360 "$tecplot_bin/tecplot360"
-set-alias tec "$tecplot_bin/tecplot360"
+set-alias tecplot "\"$tecplot_exe\""
+set-alias tec360 "\"$tecplot_exe\""
+set-alias tec "\"$tecplot_exe\""
 
 # License status checking
 # Assumes rlmutil is in the Tecplot bin directory or system PATH
@@ -70,7 +72,7 @@ set-alias tec-hostid "rlmutil rlmhostid"
 # Module load message
 if { [module-info mode load] } {
     puts stderr "Loaded Tecplot 2025 R1"
-    puts stderr "  - tecplot360 or tec: Launch Tecplot"
+    puts stderr "  - tecplot, tec360, or tec: Launch Tecplot"
     puts stderr "  - tec-status: Check license usage"
     puts stderr "  - pytecplot available in Python"
     
