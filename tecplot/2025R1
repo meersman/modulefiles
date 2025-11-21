@@ -31,6 +31,7 @@ if { ![file exists $tecplot_root] } {
 }
 
 # Add Tecplot to PATH
+prepend-path PATH $tecplot_root/bin
 prepend-path PATH $tecplot_bin
 
 # Set Tecplot environment variables
