@@ -1,0 +1,71 @@
+#%Module1.0
+##
+## Julia Programming Language
+##
+proc ModulesHelp { } {
+    puts stderr "Julia programming language for scientific computing"
+    puts stderr ""
+    puts stderr "Provides:"
+    puts stderr "  - Julia REPL and compiler"
+    puts stderr "  - Package manager (Pkg)"
+    puts stderr "  - JIT compilation with LLVM"
+    puts stderr ""
+    puts stderr "Usage:"
+    puts stderr "  julia                  - Start Julia REPL"
+    puts stderr "  julia script.jl        - Run Julia script"
+    puts stderr "  julia -e 'code'        - Execute Julia code"
+    puts stderr ""
+    puts stderr "Package management in Julia REPL:"
+    puts stderr "  ] add PackageName      - Install package"
+    puts stderr "  ] status               - List installed packages"
+}
+
+module-whatis "Julia programming language for scientific computing"
+
+# Homebrew Julia installation
+set julia_root /opt/homebrew
+
+# Add Julia to PATH
+prepend-path PATH $julia_root/bin
+
+# Julia environment variables
+setenv JULIA_ROOT $julia_root
+setenv JULIA_BINDIR "$julia_root/bin"
+
+# Optional: Set Julia depot path (where packages are installed)
+# By default uses ~/.julia, but you can customize:
+# setenv JULIA_DEPOT_PATH "$env(HOME)/.julia"
+
+# Optional: Number of threads for Julia
+# setenv JULIA_NUM_THREADS "auto"
+
+# Useful aliases
+set-alias jl "julia"
+set-alias julia-threads "julia --threads auto"
+set-alias julia-parallel "julia -p auto"
+
+# Module load message
+if { [module-info mode load] } {
+        set julia_bin "$julia_root/bin/julia"
+    if { [file exists $julia_bin] } {
+        # Tcl pipe syntax - separate commands
+        catch {
+            set version_output [exec $julia_bin --version]
+            # Extract version with Tcl string commands
+            set version [lindex $version_output 2]
+            puts stderr "Loaded Julia $version"
+        } err
+    } else {
+        puts stderr "Loaded Julia"
+    }
+    
+    puts stderr "  - julia: Start REPL"
+    puts stderr "  - julia script.jl: Run script"
+    puts stderr "  - Type ']' in REPL for package manager"
+    puts stderr ""
+    puts stderr "Popular packages:"
+    puts stderr "  ] add Plots DataFrames CSV DifferentialEquations"
+}
+
+# Conflicts
+conflict julia
